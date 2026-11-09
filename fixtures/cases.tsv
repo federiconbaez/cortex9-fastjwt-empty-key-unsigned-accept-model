@@ -1,9 +1,19 @@
 id	kind	description
-p01_empty_key_hs256	pos	key='' with algorithms=['HS256'], unsigned token
-p02_null_key_hs256	pos	key=null with algorithms=['HS256'], unsigned token
-p03_empty_key_rs256	pos	key='' with algorithms=['RS256'], unsigned token
-n01_real_key	neg	key='secret' with HS256; unsigned must fail missingSignature
-n02_none_only_empty	neg	algorithms=['none'], key=''; unsigned accepted for none
-n03_none_only_with_key	neg	algorithms=['none'] with truthy key refused post
-n04_empty_no_algs	neg	key='' with algorithms=[] (no allowlist)
-n05_real_key_with_sig	neg	key='secret', non-empty signature placeholder
+p01_empty_key_hs256	pos	key='' + algorithms=['HS256'], unsigned token
+p02_null_key_hs256	pos	key=null + algorithms=['HS256'], unsigned token
+p03_empty_key_rs256	pos	key='' + algorithms=['RS256'], unsigned token
+n01_real_key_unsigned	neg	key='secret' + HS256, unsigned → missingSignature
+n02_none_only_empty	neg	algorithms=['none'], key='' → legitimate unsigned
+n03_none_only_with_key	neg	algorithms=['none'] + truthy key → post invalidOption
+n04_empty_key_no_allowlist	neg	key='' + algorithms=[] → empty allowlist rejects every alg
+n05_real_key_with_sig	neg	key='secret' + signature present (never verified here)
+a01_int_key	adv	key=5 (typeof number)
+a02_zero_key	adv	key=0 (falsy number)
+a03_list_key	adv	key=[] (truthy object in JS)
+a04_dict_key	adv	key={} (truthy object in JS)
+a05_empty_buffer	adv	key=Buffer.alloc(0): truthy at construct, hasKey=0 at verify
+a06_alg_None_mixed	adv	algorithms=['None'] is not 'none' for allowsOnlyNone
+a07_alg_NONE_header	adv	allowlist ['none'], header 'NONE'
+a08_alg_lower_hs256	adv	allowlist ['hs256'] lowercase + empty key
+a09_algorithms_not_list	adv	algorithms='HS256' (string, coerced to [])
+a10_null_key_none_list	adv	key=null + ['none','none']

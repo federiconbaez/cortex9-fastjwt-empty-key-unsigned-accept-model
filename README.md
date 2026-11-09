@@ -12,7 +12,17 @@ Spanish: [README.es.md](README.es.md). Exercises: [PRACTICE.md](PRACTICE.md).
 | | pre (`378422c6`) | post (`e22a151e`) |
 |---|---|---|
 | Empty/null key + allowlist | construction OK; verify sees no key and no signature → ACCEPT | construction throws `invalidKey` |
+| Real key + signature | `PROCEEDS_TO_SIGNATURE_CHECK` (crypto not modelled) | same |
 | Diff | `src/verifier.js` lines 502–524 | diff lines 18–55 |
+
+`ACCEPT` is used only when verification ends with no key and no signature,
+i.e. nothing was checked (the bug path, or a legitimate `["none"]`-only
+verifier). A token that carries a signature and meets a real key is labelled
+`PROCEEDS_TO_SIGNATURE_CHECK`, never `ACCEPT`.
+
+Cases: 3 positives, 5 negatives, 10 adversarial (odd key types, mixed-case
+algorithm names, empty or non-list allowlists), modelled with explicit JS
+`typeof` and truthiness.
 
 ## Run
 

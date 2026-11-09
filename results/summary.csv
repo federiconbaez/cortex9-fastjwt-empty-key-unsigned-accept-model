@@ -1,6 +1,9 @@
 metric,value
-cases,8
-ok,8
+cases,18
+ok,18
 pos,3
 pos_flips,3
 neg,5
+adv,10
+adv_flips,2
+accept_with_signature,0

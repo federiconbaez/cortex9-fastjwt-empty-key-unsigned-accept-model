@@ -1,9 +1,19 @@
 id,kind,pre_construct,post_construct,pre_verify,post_verify,ok,flips,description
-p01_empty_key_hs256,pos,ok,invalidKey,ACCEPT,SKIP,True,True,"key='' with algorithms=['HS256'], unsigned token"
-p02_null_key_hs256,pos,ok,invalidKey,ACCEPT,SKIP,True,True,"key=null with algorithms=['HS256'], unsigned token"
-p03_empty_key_rs256,pos,ok,invalidKey,ACCEPT,SKIP,True,True,"key='' with algorithms=['RS256'], unsigned token"
-n01_real_key,neg,ok,ok,missingSignature,missingSignature,True,False,key='secret' with HS256; unsigned must fail missingSignature
-n02_none_only_empty,neg,ok,ok,ACCEPT,ACCEPT,True,False,"algorithms=['none'], key=''; unsigned accepted for none"
-n03_none_only_with_key,neg,ok,invalidOption,missingSignature,SKIP,True,False,algorithms=['none'] with truthy key refused post
-n04_empty_no_algs,neg,ok,invalidKey,ACCEPT,SKIP,True,False,key='' with algorithms=[] (no allowlist)
-n05_real_key_with_sig,neg,ok,ok,ACCEPT,ACCEPT,True,False,"key='secret', non-empty signature placeholder"
+p01_empty_key_hs256,pos,ok,invalidKey,ACCEPT,SKIP,True,True,"key='' + algorithms=['HS256'], unsigned token"
+p02_null_key_hs256,pos,ok,invalidKey,ACCEPT,SKIP,True,True,"key=null + algorithms=['HS256'], unsigned token"
+p03_empty_key_rs256,pos,ok,invalidKey,ACCEPT,SKIP,True,True,"key='' + algorithms=['RS256'], unsigned token"
+n01_real_key_unsigned,neg,ok,ok,missingSignature,missingSignature,True,False,"key='secret' + HS256, unsigned → missingSignature"
+n02_none_only_empty,neg,ok,ok,ACCEPT,ACCEPT,True,False,"algorithms=['none'], key='' → legitimate unsigned"
+n03_none_only_with_key,neg,ok,invalidOption,missingSignature,SKIP,True,False,algorithms=['none'] + truthy key → post invalidOption
+n04_empty_key_no_allowlist,neg,ok,invalidKey,invalidAlgorithm,SKIP,True,False,key='' + algorithms=[] → empty allowlist rejects every alg
+n05_real_key_with_sig,neg,ok,ok,PROCEEDS_TO_SIGNATURE_CHECK,PROCEEDS_TO_SIGNATURE_CHECK,True,False,key='secret' + signature present (never verified here)
+a01_int_key,adv,INVALID_OPTION,invalidOption,SKIP,SKIP,True,False,key=5 (typeof number)
+a02_zero_key,adv,INVALID_OPTION,invalidOption,SKIP,SKIP,True,False,key=0 (falsy number)
+a03_list_key,adv,KEY_PREP_UNMODELED,KEY_PREP_UNMODELED,SKIP,SKIP,True,False,key=[] (truthy object in JS)
+a04_dict_key,adv,KEY_PREP_UNMODELED,KEY_PREP_UNMODELED,SKIP,SKIP,True,False,key={} (truthy object in JS)
+a05_empty_buffer,adv,KEY_PREP_UNMODELED,KEY_PREP_UNMODELED,SKIP,SKIP,True,False,"key=Buffer.alloc(0): truthy at construct, hasKey=0 at verify"
+a06_alg_None_mixed,adv,ok,invalidKey,ACCEPT,SKIP,True,True,algorithms=['None'] is not 'none' for allowsOnlyNone
+a07_alg_NONE_header,adv,ok,ok,invalidAlgorithm,invalidAlgorithm,True,False,"allowlist ['none'], header 'NONE'"
+a08_alg_lower_hs256,adv,ok,invalidKey,ACCEPT,SKIP,True,True,allowlist ['hs256'] lowercase + empty key
+a09_algorithms_not_list,adv,ok,invalidKey,invalidAlgorithm,SKIP,True,False,"algorithms='HS256' (string, coerced to [])"
+a10_null_key_none_list,adv,ok,ok,ACCEPT,ACCEPT,True,False,"key=null + ['none','none']"

@@ -17,6 +17,9 @@ def _write_results(out: Path) -> None:
         w.writerow(["pos", sum(1 for r in rows if r["kind"]=="pos")])
         w.writerow(["pos_flips", sum(1 for r in rows if r["kind"]=="pos" and r["flips"])])
         w.writerow(["neg", sum(1 for r in rows if r["kind"]=="neg")])
+        w.writerow(["adv", sum(1 for r in rows if r["kind"]=="adv")])
+        w.writerow(["adv_flips", sum(1 for r in rows if r["kind"]=="adv" and r["flips"])])
+        w.writerow(["accept_with_signature", sum(1 for c, r in zip(CASES, rows) for s in ("pre_verify","post_verify") if r[s]=="ACCEPT" and c.signature)])
     with (out/"SHA256SUMS").open("w") as fh:
         for name in ("cases.csv","summary.csv"):
             fh.write(f"{hashlib.sha256((out/name).read_bytes()).hexdigest()}  {name}\n")

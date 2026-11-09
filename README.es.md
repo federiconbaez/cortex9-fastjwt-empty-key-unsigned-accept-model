@@ -5,6 +5,12 @@ Modelo diferencial offline de **CVE-2026-107720** (GHSA-8wpc-h4q6-8fxv):
 `''` o `null` y `algorithms` era una allowlist no vacía. Educativo,
 offline y determinista.
 
+`ACCEPT` solo se usa cuando la verificación termina sin clave y sin firma
+(nada se comprobó). Un token con firma frente a una clave real se etiqueta
+`PROCEEDS_TO_SIGNATURE_CHECK`, nunca `ACCEPT`. Casos: 3 positivos,
+5 negativos y 10 adversariales (tipos raros de clave, algoritmos con
+mayúsculas, allowlists vacías o que no son lista).
+
 English: [README.md](README.md). Ejercicios: [PRACTICE.md](PRACTICE.md).
 
 ## Cómo ejecutarlo
