@@ -1,0 +1,9 @@
+id	kind	description
+p01_empty_key_hs256	pos	key='' with algorithms=['HS256'], unsigned token
+p02_null_key_hs256	pos	key=null with algorithms=['HS256'], unsigned token
+p03_empty_key_rs256	pos	key='' with algorithms=['RS256'], unsigned token
+n01_real_key	neg	key='secret' with HS256; unsigned must fail missingSignature
+n02_none_only_empty	neg	algorithms=['none'], key=''; unsigned accepted for none
+n03_none_only_with_key	neg	algorithms=['none'] with truthy key refused post
+n04_empty_no_algs	neg	key='' with algorithms=[] (no allowlist)
+n05_real_key_with_sig	neg	key='secret', non-empty signature placeholder
